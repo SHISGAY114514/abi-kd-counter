@@ -18,6 +18,6 @@ try {
     }
     & $pythonExe make_icon.py
     if ($LASTEXITCODE -ne 0) { throw '图标生成失败' }
-    & $pythonExe -m PyInstaller --noconfirm --clean --onefile --windowed --name ABI-KD-1.2.1 --distpath dist-public --icon assets/app-icon.ico --add-data 'assets;assets' --collect-all rapidocr_onnxruntime --collect-all onnxruntime --add-data '使用说明.txt;.' --add-data 'LICENSE;.' --add-data 'THIRD_PARTY_NOTICES.md;.' --add-data 'THIRD_PARTY_LICENSES;THIRD_PARTY_LICENSES' --exclude-module pytest --exclude-module tkinter @runtimeArgs app.py
+    & $pythonExe -m PyInstaller --noconfirm --clean --onefile --windowed --name ABI-KD-1.2.2 --distpath dist-public --icon assets/app-icon.ico --add-data 'assets;assets' --collect-all rapidocr_onnxruntime --collect-all onnxruntime --add-data '使用说明.txt;.' --add-data 'LICENSE;.' --add-data 'THIRD_PARTY_NOTICES.md;.' --add-data 'THIRD_PARTY_LICENSES;THIRD_PARTY_LICENSES' --exclude-module pytest --exclude-module tkinter @runtimeArgs app.py
     if ($LASTEXITCODE -ne 0) { throw '打包失败' }
 } finally { $env:PATH = $abiOriginalPath; $env:PYTHONIOENCODING = $abiOriginalEncoding }

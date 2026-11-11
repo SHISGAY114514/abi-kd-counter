@@ -16,6 +16,10 @@ MODES = ('战术行动',) + TEAM_MODES
 MAPS = ('电视台', '农场', '山谷', '北部山区', '前线要塞', '机场')
 DIFFICULTIES = ('普通', '封锁区', '强化封锁区', '机密', '绝密', '感染区', '重度感染区', '物资争夺战') + TEAM_MODES
 
+def difficulty_group(difficulty):
+    """Group statistics without changing report identity or stored difficulty."""
+    return {'感染区': '封锁区', '重度感染区': '强化封锁区'}.get(difficulty, difficulty)
+
 def resources():
     return Path(getattr(sys, '_MEIPASS', Path(__file__).parent))
 

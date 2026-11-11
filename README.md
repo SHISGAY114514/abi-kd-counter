@@ -17,7 +17,7 @@
 
 ## 使用
 
-Windows 10/11 x64。下载 Release 中的 `ABI-KD-1.2.1-Windows-x64.zip`，解压后运行 EXE；无需安装 Python、注册账号或配置 API Key。
+Windows 10/11 x64。下载 Release 中的 `ABI-KD-1.2.2-Windows-x64.zip`，解压后运行 EXE；无需安装 Python、注册账号或配置 API Key。
 
 首次运行是空数据库。数据存于 `%LOCALAPPDATA%\ABI-KD`，升级时关闭旧版再运行新版，已有战绩会保留。公开源码和安装包不包含个人战绩、游戏截图或账户信息。
 
@@ -29,7 +29,7 @@ Windows 10/11 x64。下载 Release 中的 `ABI-KD-1.2.1-Windows-x64.zip`，解�
 
 截图在本机交给 RapidOCR / ONNX Runtime 识别，结合字段标签和位置提取数据。特遣淘汰数取“淘汰特遣队员数”，不使用含 AI 的总淘汰数。自动采集从历史列表取得对局日期；手动截图往往不含日期，需要核对导入时间。
 
-撤离类 KD = 特遣队员淘汰数 ÷ 撤离失败场次。这是本工具的明确口径，并不保证等同于游戏官方全生涯 KD。团队模式使用报告里的实际被击败次数，单独统计；活动和团队模式不进入主页常规难度指标。关键字段未知的对局不参与 KD。
+撤离类 KD = 特遣队员淘汰数 ÷ 撤离失败场次。这是本工具的明确口径，并不保证等同于游戏官方全生涯 KD。团队模式使用报告里的实际被击败次数，单独统计；感染区计入封锁、重度感染区计入强化封锁，两者均计入战局数和特遣淘汰总数；其他活动和团队模式不进入主页指标。原始记录仍保留原难度，KD 以合并后的淘汰数与撤离失败场次计算，不对各模式 KD 求平均。关键字段未知的对局不参与 KD。
 
 程序只截图并发送普通鼠标点击和滚轮，不读取游戏内存、不注入进程。没有云端 OCR、遥测或截图上传。
 
@@ -45,13 +45,13 @@ py -3.12 -m venv .venv
 .\build.ps1
 ```
 
-输出为 `dist-public/ABI-KD-1.2.1.exe`。构建脚本优先使用本地 `.python`、其次 `.venv`、最后 PATH 中的 Python。图标源文件为 SVG，可以自行修改再构建。
+输出为 `dist-public/ABI-KD-1.2.2.exe`。构建脚本优先使用本地 `.python`、其次 `.venv`、最后 PATH 中的 Python。图标源文件为 SVG，可以自行修改再构建。
 
 打包检查必须使用独立数据目录：
 
 ```powershell
 $env:ABI_KD_DATA_DIR = Join-Path $PWD 'qa-public'
-& .\dist-public\ABI-KD-1.2.1.exe --smoke-test
+& .\dist-public\ABI-KD-1.2.2.exe --smoke-test
 # 退出后检查 qa-public/smoke-test.json
 Remove-Item Env:ABI_KD_DATA_DIR
 ```

@@ -2,12 +2,12 @@
 import math
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QLabel,QFrame
-from core import statistics
+from core import statistics, difficulty_group
 
 STANDARD_DIFFICULTIES=('普通','封锁区','强化封锁区')
 
 def standard_rows(rows):
-    return [r for r in rows if r['mode']=='战术行动' and r.get('difficulty') in STANDARD_DIFFICULTIES]
+    return [r for r in rows if r['mode']=='战术行动' and difficulty_group(r.get('difficulty')) in STANDARD_DIFFICULTIES]
 
 def ratio(v):
     if v is None: return '—'
@@ -17,7 +17,7 @@ def ratio(v):
 class Dashboard(QWidget):
     def __init__(self):
         super().__init__(); root=QVBoxLayout(self); root.setContentsMargins(30,26,30,16); root.setSpacing(22)
-        scope=QLabel('战术行动  /  常规难度'); scope.setObjectName('muted'); root.addWidget(scope)
+        scope=QLabel('战术行动  /  含感染区、重度感染区'); scope.setObjectName('muted'); root.addWidget(scope)
         battle=QFrame(); battle.setObjectName('banner'); bl=QVBoxLayout(battle); bl.setContentsMargins(26,22,26,22)
         title=QLabel('战局数'); title.setObjectName('muted'); self.battles=QLabel('—'); self.battles.setStyleSheet('font-size:58px;font-weight:300;background:transparent;')
         bl.addWidget(title); bl.addWidget(self.battles); root.addWidget(battle)
@@ -34,7 +34,7 @@ class Dashboard(QWidget):
         box.addLayout(values); separator=QFrame(); separator.setFrameShape(QFrame.HLine); separator.setStyleSheet('color:#385347;'); box.addWidget(separator)
         defeated=QHBoxLayout(); title=QLabel('击败特遣队员数'); title.setObjectName('muted'); self.kills=QLabel('—'); self.kills.setStyleSheet('font-size:27px;color:#a6e7be;background:transparent;')
         defeated.addWidget(title); defeated.addStretch(); defeated.addWidget(self.kills); box.addLayout(defeated); root.addWidget(panel)
-        self.note=QLabel('统计普通、封锁、强化封锁；活动和团队模式保留在历史战绩。\nKD = 特遣队员淘汰数 ÷ 撤离失败场次，未知字段不补零。'); self.note.setWordWrap(True); self.note.setObjectName('caption'); root.addWidget(self.note)
+        self.note=QLabel('感染区计入封锁；重度感染区计入强化封锁。其他活动和团队模式仅保留在历史战绩。\nKD = 特遣队员淘汰数 ÷ 撤离失败场次，未知字段不补零。'); self.note.setWordWrap(True); self.note.setObjectName('caption'); root.addWidget(self.note)
         root.addStretch(1)
 
     def update_data(self,rows,team=False):
@@ -42,7 +42,8 @@ class Dashboard(QWidget):
         self.battles.setText(str(s['total'])); self.kills.setText(str(s['kills']))
         self.kills.setToolTip(f'只统计特遣队员，不计 AI；淘汰数已知 {s["kill_samples"]}/{s["total"]} 场。')
         for difficulty,label in zip(STANDARD_DIFFICULTIES,self.kd_values):
-            group=[r for r in rows if r['difficulty']==difficulty]; g=statistics(group); value=g['kd']
+            group=[r for r in rows if difficulty_group(r['difficulty'])==difficulty]; g=statistics(group); value=g['kd']
             label.setText(ratio(value))
             precision='暂无完整数据' if value is None else '∞' if math.isinf(value) else f'{value:.4f}'
-            label.setToolTip(f'{difficulty}：{g["kd_kills"]} 次淘汰 ÷ {g["deaths"]} 次撤离失败\n精确 KD：{precision}\n完整样本 {g["valid"]}/{g["total"]} 场。\n此处采用撤离失败口径，不宣称等同于三角洲官方计算。')
+            scope={'封锁区':'封锁区（含感染区）','强化封锁区':'强化封锁区（含重度感染区）'}.get(difficulty,difficulty)
+            label.setToolTip(f'{scope}：{g["kd_kills"]} 次淘汰 ÷ {g["deaths"]} 次撤离失败\n精确 KD：{precision}\n完整样本 {g["valid"]}/{g["total"]} 场。\n此处采用撤离失败口径，不宣称等同于三角洲官方计算。')

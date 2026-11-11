@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushB
 from capture import Collector, classify, merge_selected, save_manifest
 from capture_windows import Desktop, game_windows
 from dashboard import STANDARD_DIFFICULTIES, standard_rows, ratio
+from core import difficulty_group
 from core import statistics
 
 
@@ -123,7 +124,7 @@ class CaptureDialog(QDialog):
         for item in self.selected_items():
             if classify(item['row'],combined)=='新增': combined.append(item['row'])
         rows = standard_rows(combined); s = statistics(rows)
-        kd = [ratio(statistics([r for r in rows if r['difficulty']==d])['kd']) for d in STANDARD_DIFFICULTIES]
+        kd = [ratio(statistics([r for r in rows if difficulty_group(r['difficulty'])==d])['kd']) for d in STANDARD_DIFFICULTIES]
         self.preview_label.setText(f'合并后预览（尚未写入）：战局数 {s["total"]}   KD 普通 / 封锁 / 强化封锁：{" / ".join(kd)}   击败特遣队员 {s["kills"]}')
 
     def review(self,index,*_):

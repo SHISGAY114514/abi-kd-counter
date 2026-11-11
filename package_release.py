@@ -7,7 +7,7 @@ from pathlib import Path
 from PyInstaller.archive.readers import CArchiveReader
 
 ROOT = Path(__file__).parent
-VERSION = '1.2.1'
+VERSION = '1.2.2'
 PUBLIC_FILES = [
     '.gitignore', 'README.md', 'LICENSE',
     'CHANGELOG.md', 'THIRD_PARTY_NOTICES.md', '使用说明.txt', 'requirements.txt',

@@ -169,7 +169,7 @@ class OCRWorker(QThread):
 class Window(QMainWindow):
     def __init__(self,store):
         super().__init__(); self.store=store; self.worker=None; self.queue=[]; self.visible_rows=[]; self.tempfiles=[]
-        self.setWindowTitle('暗区战绩 · KD 计数器 1.2.1'); self.resize(1280,920); self.setMinimumSize(1080,820); self.setAcceptDrops(True)
+        self.setWindowTitle('暗区战绩 · KD 计数器 1.2.2'); self.resize(1280,920); self.setMinimumSize(1080,820); self.setAcceptDrops(True)
         self.setWindowIcon(QIcon(str(resources()/'assets/app-icon.ico')))
         root=QWidget(); self.setCentralWidget(root); layout=QVBoxLayout(root); layout.setContentsMargins(26,24,26,20); layout.setSpacing(15)
         top=QHBoxLayout(); mark=QLabel(); mark.setPixmap(QPixmap(str(resources()/'assets/app-icon.png')).scaled(58,58,Qt.KeepAspectRatio,Qt.SmoothTransformation)); top.addWidget(mark); top.addSpacing(10)
@@ -383,9 +383,9 @@ class Window(QMainWindow):
             '1.2 新增自动采集：先打开游戏个人主页的历史战绩，再点击自动采集。\n'
             '采集期间勿操作鼠标，F8 或切换窗口停止。结果独立暂存，核对后才合并新增。\n'
             '主页仅显示战局数、三种难度的 KD、击败特遣队员数。\n'
-            '范围固定为普通 / 封锁 / 强化封锁，活动和团队模式保留在历史中。\n'
+            '感染区计入封锁，重度感染区计入强化封锁；其他活动和团队模式仅保留在历史中。\n'
             'KD 显示一位小数，整数省略小数；悬停查看精度、样本数和公式。\n'
-            '历史筛选仅影响历史列表和 CSV，不改变主页的全部常规难度数据。\n\n'
+            '历史筛选仅影响历史列表和 CSV，不改变主页的全部统计（含感染区）。\n\n'
             f'数据目录：{self.store.path}\n数据仅保存在本机，无需账号或 API Key。')
 
     def closeEvent(self,event):
